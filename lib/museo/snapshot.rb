@@ -1,4 +1,6 @@
 require "fileutils"
+require_relative "snapshot/rspec"
+require_relative "snapshot/minitest"
 
 module Museo
   class Snapshot
@@ -38,8 +40,10 @@ module Museo
       end
     end
 
-    def initialize(test_case)
-      @test_case = test_case
+    def initialize(klass:, test_name:, response:)
+      @class_name = klass.to_s
+      @test_name = test_name
+      @response = response
 
       update unless exists?
     end
@@ -57,11 +61,11 @@ module Museo
     end
 
     def folder
-      self.class.folder(@test_case.class.to_s)
+      self.class.folder(@class_name)
     end
 
     def file_name
-      "#{clean_name(@test_case.name)}.snapshot"
+      "#{clean_name(@test_name)}.snapshot"
     end
 
     def path
@@ -72,7 +76,7 @@ module Museo
       FileUtils.mkdir_p(folder)
 
       File.open(path, "wb") do |f|
-        f.print self.class.sanitize_response(@test_case.response.body.to_s)
+        f.print self.class.sanitize_response(@response.body.to_s)
       end
 
       puts "Updated snapshot for #{file_name.inspect}"
