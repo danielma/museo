@@ -1,13 +1,10 @@
-require "test_helper"
 require "museo/cli"
 
-class MuseoTest < ActiveSupport::TestCase
-  class SnapshotsControllerResponseTest < ActionController::TestCase
-    tests SnapshotsController
+RSpec.describe SnapshotsController, type: :controller do
+  include Museo::Rspec
 
-    include Museo::Minitest
-
-    setup do
+  describe "Responses" do
+    before(:each) do
       Museo::CLI.new("clear")
       @expected_response_includes = nil
     end
@@ -22,52 +19,44 @@ class MuseoTest < ActiveSupport::TestCase
       @expected_response_includes = "Snapshot named No name"
     end
 
-    snapshot "#index with one = Dolores" do
-      get :index, one: "Dolores"
-      @expected_response_includes = "Dolores"
+    snapshot "#index with one = Ford" do
+      get :index, one: "Ford"
+      @expected_response_includes = "Ford"
     end
 
-    teardown do
+    after(:each) do
       assert_includes response.body, @expected_response_includes
       Museo::CLI.new("clear")
     end
   end
 
-  class SnapshotsControllerSnapshotsTest < ActionController::TestCase
-    tests SnapshotsController
+  describe "Snapshots" do
+    FAILURE_MESSAGE = "In this test group, snapshots should fail".freeze
 
-    FAILURE_MESSAGE = "In this test class, snapshots should fail".freeze
-
-    include Museo::Minitest
-
-    setup do
+    before(:each) do
       Museo::CLI.new("clear")
     end
 
-    def assert_snapshot
+    def expect_matching_snapshot(example)
       super
-      flunk FAILURE_MESSAGE
-    rescue Minitest::Assertion => e
+      fail FAILURE_MESSAGE
+    rescue RSpec::Expectations::ExpectationNotMetError => e
       raise if e.message == FAILURE_MESSAGE
     end
 
-    snapshot "should fail with different body" do
+    snapshot "should fail with different body" do |example|
       get :index
-      Museo::Snapshot::Minitest.new(self)
-      get :index, one: "Bernard"
+      Museo::Snapshot::Rspec.new(self, example.metadata)
+      get :index, one: "Bernarnold"
     end
 
-    teardown do
+    after(:each) do
       Museo::CLI.new("clear")
     end
   end
 
-  class SnapshotsControllerStubTest < ActionController::TestCase
-    tests SnapshotsController
-
-    include Museo::Minitest
-
-    setup do
+  describe "Stubs" do
+    before(:each) do
       Museo::Snapshot.stub(:render) do |options = {}, block = nil|
         options[:content] = capture(&block) if block
         options
@@ -80,10 +69,10 @@ class MuseoTest < ActiveSupport::TestCase
       @expected_response_matches = [/stubbed method call: render/i, "Snapshot:0x"]
     end
 
-    teardown do
+    after(:each) do
       Museo::Snapshot.clear_stubs!
       @expected_response_matches.each do |expected_match|
-        assert_match expected_match, response.body
+        expect(response.body).to match(expected_match)
       end
       Museo::CLI.new("clear")
     end
