@@ -14,23 +14,56 @@ module Museo
     end
 
     def list(matcher)
-      folder_to_clear = Snapshot.folder(matcher)
+      directory = find_directory(matcher)
 
-      if File.directory?(folder_to_clear)
-        puts "Clearing directory: #{folder_to_clear}\n\n"
-        Dir["#{folder_to_clear}/**/*.snapshot"].each do |snapshot|
-          puts snapshot.sub("#{folder_to_clear}/", "")
-        end
-        folder_to_clear
+      if directory
+        puts "Directory: #{directory}\n\n"
+        list_files(directory)
       else
-        puts "No directory found: #{folder_to_clear}"
+        puts "No directory found: #{directory}"
       end
     end
 
     def clear(matcher)
-      folder_to_clear = list(matcher)
+      list(matcher)
+      directory_to_clear = find_directory(matcher)
 
-      FileUtils.remove_dir(folder_to_clear) if folder_to_clear
+      return unless directory_to_clear
+
+      puts "Removing snapshots"
+      FileUtils.remove_dir(directory_to_clear)
+    end
+
+    private
+
+    def find_directory(matcher_or_pathname)
+      return matcher_or_pathname if matcher_or_pathname.is_a?(Pathname)
+
+      path = Museo.pathname(matcher_or_pathname)
+
+      File.directory?(path) ? path : nil
+    end
+
+    def files(matcher)
+      directory = find_directory(matcher)
+
+      return [] unless directory
+
+      Dir[directory.join("**", "*.snapshot")].map do |snapshot|
+        Pathname.new(snapshot)
+      end
+    end
+
+    def list_files(directory)
+      files = files(directory)
+
+      if files.any?
+        files.each do |path|
+          puts path.relative_path_from(directory)
+        end
+      else
+        puts "No files"
+      end
     end
   end
 end

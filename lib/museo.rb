@@ -8,23 +8,41 @@ require "museo/rspec_integration"
 require "museo/engine"
 
 module Museo
-  def self.configure
-    yield(configuration)
-  end
+  class << self
+    def configure
+      yield(configuration)
+    end
 
-  def self.configuration
-    @configuration ||= Configuration.new
-  end
+    def configuration
+      @configuration ||= Configuration.new
+    end
 
-  def self.rails_root
-    @rails_root ||= Rails::Application.find_root(Dir.pwd)
+    def rails_root
+      @rails_root ||= Rails::Application.find_root(Dir.pwd)
+    end
+
+    def clean_name(name)
+      if name
+        name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
+      else
+        ""
+      end
+    end
+
+    def pathname(class_name = "")
+      test_directory = Museo.configuration.rspec ? "spec" : "test"
+
+      Museo.rails_root.join(test_directory, "snapshots", clean_name(class_name))
+    end
   end
 
   class Configuration
     attr_accessor :formatter
+    attr_accessor :rspec
 
     def initialize
       @formatter = Museo::Formatter.new
+      @rspec = false
     end
 
     def stubbed_methods
