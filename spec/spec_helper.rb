@@ -4,11 +4,19 @@ require "awesome_print"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
-    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+    if expectations.respond_to?(:include_chain_clauses_in_custom_matcher_descriptions)
+      expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+    end
   end
 
   config.mock_with :rspec do |mocks|
-    mocks.verify_partial_doubles = true
+    if mocks.respond_to?(:verify_partial_doubles)
+      mocks.verify_partial_doubles = true
+    end
+  end
+
+  if config.respond_to?(:treat_symbols_as_metadata_keys_with_true_values)
+    config.treat_symbols_as_metadata_keys_with_true_values = true
   end
 
   # These two settings work together to allow you to limit a spec run
@@ -18,17 +26,21 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
-  # Allows RSpec to persist some state between runs in order to support
-  # the `--only-failures` and `--next-failure` CLI options. We recommend
-  # you configure your source control system to ignore this file.
-  config.example_status_persistence_file_path = "spec/reports/examples.txt"
+  if config.respond_to?(:example_status_persistence_file_path)
+    # Allows RSpec to persist some state between runs in order to support
+    # the `--only-failures` and `--next-failure` CLI options. We recommend
+    # you configure your source control system to ignore this file.
+    config.example_status_persistence_file_path = "spec/reports/examples.txt"
+  end
 
-  # Limits the available syntax to the non-monkey patched syntax that is
-  # recommended. For more details, see:
-  #   - http://rspec.info/blog/2012/06/rspecs-new-expectation-syntax/
-  #   - http://www.teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/
-  #   - http://rspec.info/blog/2014/05/notable-changes-in-rspec-3/#zero-monkey-patching-mode
-  config.disable_monkey_patching!
+  if config.respond_to?(:disable_monkey_patching!)
+    # Limits the available syntax to the non-monkey patched syntax that is
+    # recommended. For more details, see:
+    #   - http://rspec.info/blog/2012/06/rspecs-new-expectation-syntax/
+    #   - http://www.teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/
+    #   - http://rspec.info/blog/2014/05/notable-changes-in-rspec-3/#zero-monkey-patching-mode
+    config.disable_monkey_patching!
+  end
 
   # Many RSpec users commonly either run the entire suite or an individual
   # file, and it's useful to allow more verbose output when running an
