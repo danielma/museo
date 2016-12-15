@@ -64,7 +64,7 @@ module Museo
     def _redefine_render_with_snapshot_layout
       @controller.define_singleton_method(:render) do |*args|
         options = args.length > 1 ? args.last : {}
-        super(*args[1..-2], options.merge(layout: "snapshot"))
+        super(*args[1..-2], options.merge(layout: "museo/snapshot"))
       end
     end
   end

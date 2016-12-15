@@ -2,49 +2,36 @@ require "fileutils"
 
 module Museo
   class Snapshot
-    mattr_accessor(:stubbed_methods) { {} }
-    mattr_accessor(:formatter) { Museo::Formatter.new }
+    extend Forwardable
 
-    def self.stub(name, value = nil)
-      value = block_given? ? Proc.new : value
+    @stubbed_methods = {}
+    @formatter = Museo::Formatter.new
 
-      stubbed_methods[name] = value
-    end
+    class << self
+      attr_reader :stubbed_methods
+      attr_accessor :formatter
 
-    def self.list(matcher)
-      folder_to_clear = folder(matcher)
+      def stub(name, value = nil)
+        value = block_given? ? Proc.new : value
 
-      if File.directory?(folder_to_clear)
-        puts "Clearing directory: #{folder_to_clear}\n\n"
-        Dir["#{folder_to_clear}/**/*.snapshot"].each do |snapshot|
-          puts snapshot.sub("#{folder_to_clear}/", "")
+        @stubbed_methods[name] = value
+      end
+
+      def clean_name(name)
+        if name
+          name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
+        else
+          ""
         end
-        folder_to_clear
-      else
-        puts "No directory found: #{folder_to_clear}"
       end
-    end
 
-    def self.clear(matcher)
-      folder_to_clear = list(matcher)
-
-      FileUtils.remove_dir(folder_to_clear) if folder_to_clear
-    end
-
-    def self.clean_name(name)
-      if name
-        name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
-      else
-        ""
+      def folder(class_name)
+        Museo.rails_root.join("test/snapshots", clean_name(class_name))
       end
-    end
 
-    def self.folder(class_name)
-      Rails.root.join("test/snapshots", clean_name(class_name))
-    end
-
-    def self.sanitize_response(body)
-      body.gsub(/:0x[a-fA-F0-9]{4,}/m, ":0xXXXXXX")
+      def sanitize_response(body)
+        body.gsub(/:0x[a-fA-F0-9]{4,}/m, ":0xXXXXXX")
+      end
     end
 
     def initialize(test_case)
@@ -61,7 +48,7 @@ module Museo
 
     attr_reader :test_case
 
-    delegate :clean_name, to: :class
+    delegate([:clean_name] => self)
 
     def exists?
       File.exist?(path)
@@ -76,7 +63,7 @@ module Museo
     end
 
     def path
-      Rails.root.join(folder, file_name)
+      Museo.rails_root.join(folder, file_name)
     end
 
     def update

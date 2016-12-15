@@ -1,0 +1,8 @@
+<% @view_flow.content.keys.each do |key| %>
+<!-- content_for <%= key %> -->
+
+<%= yield key %>
+
+<!-- end <%= key %> -->
+
+<% end %>
