@@ -5,7 +5,7 @@ class MuseoTest < ActiveSupport::TestCase
   class SnapshotsControllerResponseTest < ActionController::TestCase
     tests SnapshotsController
 
-    include Museo::Minitest
+    include Museo::MinitestIntegration
 
     setup do
       Museo::CLI.new("clear")
@@ -38,7 +38,7 @@ class MuseoTest < ActiveSupport::TestCase
 
     FAILURE_MESSAGE = "In this test class, snapshots should fail".freeze
 
-    include Museo::Minitest
+    include Museo::MinitestIntegration
 
     setup do
       Museo::CLI.new("clear")
@@ -65,7 +65,7 @@ class MuseoTest < ActiveSupport::TestCase
   class SnapshotsControllerStubTest < ActionController::TestCase
     tests SnapshotsController
 
-    include Museo::Minitest
+    include Museo::MinitestIntegration
 
     setup do
       Museo::Snapshot.stub(:render) do |options = {}, block = nil|

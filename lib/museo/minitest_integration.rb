@@ -1,20 +1,19 @@
 module Museo
-  module Rspec
+  module MinitestIntegration
     def self.included(base)
-      base.render_views
       base.extend(ClassMethods)
     end
 
     module ClassMethods
       def snapshot(description)
-        it "matches snapshot: #{description}" do |example|
+        test "snapshot: #{description}" do
           begin
             _add_snapshot_helper_methods
             _redefine_render_with_snapshot_layout
 
-            instance_exec(example, &Proc.new)
+            instance_eval(&Proc.new)
 
-            expect_matching_snapshot(example)
+            assert_snapshot
           ensure
             _remove_snapshot_helper_methods
           end
@@ -22,9 +21,10 @@ module Museo
       end
     end
 
-    def expect_matching_snapshot(example)
-      expect(Snapshot::Rspec.new(self, example.metadata).body).to(
-        eq(Snapshot.sanitize_response(response.body)),
+    def assert_snapshot
+      assert_equal(
+        Snapshot::Minitest.new(self).body,
+        Snapshot.sanitize_response(response.body),
         "Snapshot did not match",
       )
     end

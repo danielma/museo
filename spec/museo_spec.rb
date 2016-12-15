@@ -1,7 +1,7 @@
 require "museo/cli"
 
 RSpec.describe SnapshotsController, type: :controller do
-  include Museo::Rspec
+  include Museo::RspecIntegration
 
   describe "Responses" do
     before(:each) do
