@@ -17,15 +17,13 @@ module Museo
 
     private
 
-    attr_reader :indent
-
     def format_hash(hash, indent_level)
       [
         "{",
         hash.map do |key, value|
-          "#{indent * (indent_level + 1)}#{format(key)} => #{format(value, indent_level + 1)},"
+          "#{@indent * (indent_level + 1)}#{format(key)} => #{format(value, indent_level + 1)},"
         end,
-        "#{indent * indent_level}}",
+        "#{@indent * indent_level}}",
       ].join("\n")
     end
 
@@ -33,9 +31,9 @@ module Museo
       [
         "[",
         array.map do |value|
-          "#{indent * (indent_level + 1)}#{format(value, indent_level + 1)},"
+          "#{@indent * (indent_level + 1)}#{format(value, indent_level + 1)},"
         end,
-        "#{indent * indent_level}]",
+        "#{@indent * indent_level}]",
       ].join("\n")
     end
 

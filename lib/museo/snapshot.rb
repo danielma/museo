@@ -17,6 +17,10 @@ module Museo
         @stubbed_methods[name] = value
       end
 
+      def clear_stubs!
+        @stubbed_methods = {}
+      end
+
       def clean_name(name)
         if name
           name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
@@ -30,7 +34,7 @@ module Museo
       end
 
       def sanitize_response(body)
-        body.gsub(/:0x[a-fA-F0-9]{4,}/m, ":0xXXXXXX")
+        body.gsub(/:0x[a-fA-F0-9]{4,}/, ":0xXXXXXX")
       end
     end
 
@@ -46,8 +50,6 @@ module Museo
 
     private
 
-    attr_reader :test_case
-
     delegate([:clean_name] => self)
 
     def exists?
@@ -55,11 +57,11 @@ module Museo
     end
 
     def folder
-      self.class.folder(test_case.class.to_s)
+      self.class.folder(@test_case.class.to_s)
     end
 
     def file_name
-      "#{clean_name(test_case.name)}.snapshot"
+      "#{clean_name(@test_case.name)}.snapshot"
     end
 
     def path
@@ -70,10 +72,10 @@ module Museo
       FileUtils.mkdir_p(folder)
 
       File.open(path, "wb") do |f|
-        f.print self.class.sanitize_response(test_case.response.body.to_s)
+        f.print self.class.sanitize_response(@test_case.response.body.to_s)
       end
 
-      puts "Updated snapshot for #{test_case.name.inspect}"
+      puts "Updated snapshot for #{file_name.inspect}"
     end
   end
 end
