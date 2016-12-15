@@ -11,7 +11,7 @@ module Museo
 
     def _add_snapshot_helper_methods
       @controller.class.helper do
-        Snapshot.stubbed_methods.each do |method_name, callable|
+        Museo.configuration.stubbed_methods.each do |method_name, callable|
           alias_method("_original_#{method_name}", method_name) if method_defined?(method_name)
 
           define_method(method_name) do |*args, &block|
@@ -20,7 +20,7 @@ module Museo
             [
               "<!--",
               "Stubbed method call: #{method_name}",
-              Snapshot.formatter.format(output),
+              Museo.configuration.formatter.format(output),
               "-->",
               "",
             ].join("\n").html_safe
@@ -31,7 +31,7 @@ module Museo
 
     def _remove_snapshot_helper_methods
       @controller.class.helper do
-        Snapshot.stubbed_methods.each do |method_name, _callable|
+        Museo.configuration.stubbed_methods.each do |method_name, _callable|
           remove_method method_name
 
           if method_defined?("_original_#{method_name}")
