@@ -6,23 +6,7 @@ module Museo
   class Snapshot
     extend Forwardable
 
-    @stubbed_methods = {}
-    @formatter = Museo::Formatter.new
-
     class << self
-      attr_reader :stubbed_methods
-      attr_accessor :formatter
-
-      def stub(name, value = nil)
-        value = block_given? ? Proc.new : value
-
-        @stubbed_methods[name] = value
-      end
-
-      def clear_stubs!
-        @stubbed_methods = {}
-      end
-
       def clean_name(name)
         if name
           name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
