@@ -1,32 +1,12 @@
 module Museo
-  module Minitest
-    def self.included(base)
-      base.extend(ClassMethods)
+  module TestIntegration
+    def _museo_setup
+      _add_snapshot_helper_methods
+      _redefine_render_with_snapshot_layout
     end
 
-    module ClassMethods
-      def snapshot(description)
-        test "snapshot: #{description}" do
-          begin
-            _add_snapshot_helper_methods
-            _redefine_render_with_snapshot_layout
-
-            instance_eval(&Proc.new)
-
-            assert_snapshot
-          ensure
-            _remove_snapshot_helper_methods
-          end
-        end
-      end
-    end
-
-    def assert_snapshot
-      assert_equal(
-        Snapshot::Minitest.new(self).body,
-        Snapshot.sanitize_response(response.body),
-        "Snapshot did not match",
-      )
+    def _museo_teardown
+      _remove_snapshot_helper_methods
     end
 
     def _add_snapshot_helper_methods
