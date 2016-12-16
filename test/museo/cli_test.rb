@@ -24,7 +24,7 @@ module Museo
     test "#list with no directory" do
       output = capture_stdout { described_class.new("list") }
 
-      assert_includes output, "No directory found"
+      assert_includes output, "No directory found: #{Museo.pathname}"
     end
 
     test "#list with directory but no files" do
