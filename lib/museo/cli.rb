@@ -2,7 +2,7 @@ require "thor"
 
 module Museo
   class CLI < Thor
-    desc "list MATCHER", "List snapshots that match MATCHER"
+    desc "list [MATCHER]", "List snapshots that match MATCHER"
     def list(matcher = nil)
       directory = find_directory(matcher)
 
@@ -14,7 +14,7 @@ module Museo
       end
     end
 
-    desc "clear MATCHER", "Clear snapshots that match MATCHER"
+    desc "clear [MATCHER]", "Clear snapshots that match MATCHER"
     def clear(matcher = nil)
       list(matcher)
       directory_to_clear = find_directory(matcher)
