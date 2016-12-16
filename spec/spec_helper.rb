@@ -2,6 +2,9 @@ require "museo"
 require "pry"
 require "awesome_print"
 
+Museo.clear_configuration!
+Museo.configuration.generation_disabled = false
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     if expectations.respond_to?(:include_chain_clauses_in_custom_matcher_descriptions)

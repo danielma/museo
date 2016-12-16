@@ -4,6 +4,8 @@ require_relative "snapshot/minitest"
 
 module Museo
   class Snapshot
+    class GenerationDisabledError < StandardError; end
+
     class << self
       def sanitize_response(body)
         body.gsub(/:0x[a-fA-F0-9]{4,}/, ":0xXXXXXX")
@@ -15,7 +17,7 @@ module Museo
       @test_name = test_name
       @response = response
 
-      update unless exists?
+      generate unless exists?
     end
 
     def body
@@ -40,12 +42,20 @@ module Museo
       Museo.rails_root.join(folder, file_name)
     end
 
-    def update
+    def sanitized_response
+      self.class.sanitize_response(@response.body.to_s)
+    end
+
+    def generate
+      if Museo.configuration.generation_disabled
+        fail GenerationDisabledError,
+             "Can't generate snapshots in a CI environment. " \
+             "Please generate snapshots locally first"
+      end
+
       FileUtils.mkdir_p(folder)
 
-      File.open(path, "wb") do |f|
-        f.print self.class.sanitize_response(@response.body.to_s)
-      end
+      File.open(path, "wb") { |f| f.print sanitized_response }
 
       puts "Updated snapshot for #{file_name.inspect}"
     end

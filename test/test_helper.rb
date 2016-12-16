@@ -21,6 +21,9 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixtures :all
 end
 
+Museo.clear_configuration!
+Museo.configuration.generation_disabled = false
+
 module ActiveSupport
   class TestCase
     def described_class

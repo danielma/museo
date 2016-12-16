@@ -16,7 +16,7 @@ module Museo
     def list(matcher)
       directory = find_directory(matcher)
 
-      if directory
+      if File.directory?(directory)
         puts "Directory: #{directory}\n\n"
         list_files(directory)
       else
@@ -28,7 +28,7 @@ module Museo
       list(matcher)
       directory_to_clear = find_directory(matcher)
 
-      return unless directory_to_clear
+      return unless File.directory?(directory_to_clear)
 
       puts "Removing snapshots"
       FileUtils.remove_dir(directory_to_clear)
@@ -39,9 +39,7 @@ module Museo
     def find_directory(matcher_or_pathname)
       return matcher_or_pathname if matcher_or_pathname.is_a?(Pathname)
 
-      path = Museo.pathname(matcher_or_pathname)
-
-      File.directory?(path) ? path : nil
+      Museo.pathname(matcher_or_pathname)
     end
 
     def files(matcher)
