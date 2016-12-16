@@ -24,7 +24,7 @@ module Museo
     test "#list with no directory" do
       output = capture_stdout { described_class.new("list") }
 
-      assert_includes output, "No directory found"
+      assert_includes output, "No directory found: #{Museo.pathname}"
     end
 
     test "#list with directory but no files" do
@@ -84,5 +84,7 @@ module Museo
       refute File.exist?(Museo.pathname("Admin"))
       assert File.exist?(Museo.pathname("ProductsController"))
     end
+
+    # test "#update updates snapshots 
   end
 end
