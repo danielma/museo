@@ -59,6 +59,8 @@ Museo makes a custom testing command available to your controller tests to save 
 
 These examples will be written with Minitest, but there are examples below for how to work with RSpec as well.
 
+_Note: all code from this guide can be found at the [museo-example](https://github.com/danielma/museo-example) repo_
+
 Let's start with a simple setup and write some snapshot tests.
 
 `app/controllers/products_controller.rb`
