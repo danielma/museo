@@ -14,15 +14,15 @@ module Museo
     end
 
     def setup
-      capture_stdout { described_class.new("clear") }
+      capture_stdout { described_class.new.clear }
     end
 
     def teardown
-      capture_stdout { described_class.new("clear") }
+      capture_stdout { described_class.new.clear }
     end
 
     test "#list with no directory" do
-      output = capture_stdout { described_class.new("list") }
+      output = capture_stdout { described_class.new.list }
 
       assert_includes output, "No directory found: #{Museo.pathname}"
     end
@@ -30,7 +30,7 @@ module Museo
     test "#list with directory but no files" do
       FileUtils.mkdir_p(Museo.pathname("_super_folder_"))
 
-      output = capture_stdout { described_class.new("list", "_super_folder_") }
+      output = capture_stdout { described_class.new.list("_super_folder_") }
 
       assert_includes output, "Directory:"
       assert_includes output, "/_super_folder_"
@@ -41,7 +41,7 @@ module Museo
       FileUtils.mkdir_p(Museo.pathname("_super_folder_"))
       FileUtils.touch(Museo.pathname("_super_folder_").join("view.snapshot"))
 
-      output = capture_stdout { described_class.new("list", "_super_folder_") }
+      output = capture_stdout { described_class.new.list("_super_folder_") }
 
       assert_includes output, "Directory:"
       assert_includes output, "/_super_folder_"
@@ -53,7 +53,7 @@ module Museo
       FileUtils.mkdir_p(Museo.pathname("Admin::UsersController"))
       FileUtils.touch(Museo.pathname("Admin::UsersController").join("view.snapshot"))
 
-      output = capture_stdout { described_class.new("list", "Admin") }
+      output = capture_stdout { described_class.new.list("Admin") }
 
       assert_includes output, "Directory:"
       assert_includes output, "UsersController/view.snapshot"
@@ -63,7 +63,7 @@ module Museo
       FileUtils.mkdir_p(Museo.pathname("Admin::UsersController"))
       FileUtils.touch(Museo.pathname("Admin::UsersController").join("view.snapshot"))
 
-      output = capture_stdout { described_class.new("clear") }
+      output = capture_stdout { described_class.new.clear }
 
       refute File.exist?(Museo.pathname("Admin::UsersController"))
       refute File.exist?(Museo.pathname)
@@ -78,7 +78,7 @@ module Museo
       FileUtils.touch(Museo.pathname("Admin::UsersController").join("view.snapshot"))
       FileUtils.mkdir_p(Museo.pathname("ProductsController"))
 
-      output = capture_stdout { described_class.new("clear", "Admin") }
+      output = capture_stdout { described_class.new.clear("Admin") }
 
       assert_match(/Directory: \/.+\/Admin/, output)
       refute File.exist?(Museo.pathname("Admin"))

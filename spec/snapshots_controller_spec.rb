@@ -5,7 +5,7 @@ RSpec.describe SnapshotsController, type: :controller do
 
   describe "Responses" do
     before(:each) do
-      Museo::CLI.new("clear")
+      Museo.clear!
       @expected_response_includes = nil
     end
 
@@ -26,7 +26,7 @@ RSpec.describe SnapshotsController, type: :controller do
 
     after(:each) do
       assert_includes response.body, @expected_response_includes
-      Museo::CLI.new("clear")
+      Museo.clear!
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe SnapshotsController, type: :controller do
     FAILURE_MESSAGE = "In this test group, snapshots should fail".freeze
 
     before(:each) do
-      Museo::CLI.new("clear")
+      Museo.clear!
     end
 
     def expect_matching_snapshot(example)
@@ -51,7 +51,7 @@ RSpec.describe SnapshotsController, type: :controller do
     end
 
     after(:each) do
-      Museo::CLI.new("clear")
+      Museo.clear!
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe SnapshotsController, type: :controller do
       @expected_response_matches.each do |expected_match|
         expect(response.body).to match(expected_match)
       end
-      Museo::CLI.new("clear")
+      Museo.clear!
     end
   end
 end

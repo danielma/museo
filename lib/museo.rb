@@ -38,6 +38,14 @@ module Museo
     def clear_configuration!
       @configuration = Configuration.new
     end
+
+    def clear!(matcher = nil)
+      directory_to_clear = pathname(matcher)
+
+      return unless File.directory?(directory_to_clear)
+
+      FileUtils.remove_dir(directory_to_clear)
+    end
   end
 
   class Configuration

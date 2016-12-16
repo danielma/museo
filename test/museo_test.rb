@@ -29,8 +29,14 @@ class MuseoTest < ActiveSupport::TestCase
     end
   end
 
-  test "uses minitest test directory by default" do
-    assert_includes described_class.pathname("hello").to_s, "test/snapshots/hello"
+  test "uses rspec directory if spec directory is found" do
+    with_modified_configuration do
+      assert_includes described_class.pathname("hello").to_s, "spec/snapshots/hello"
+
+      described_class.configuration.rspec = false
+
+      assert_includes described_class.pathname("hello").to_s, "test/snapshots/hello"
+    end
   end
 
   def with_modified_configuration

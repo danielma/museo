@@ -30,7 +30,7 @@ module Museo
     end
 
     def teardown
-      Museo::CLI.new("clear")
+      Museo.clear!
     end
 
     def with_generation_disabled

@@ -17,12 +17,9 @@ module Museo
     desc "clear [MATCHER]", "Clear snapshots that match MATCHER"
     def clear(matcher = nil)
       list(matcher)
-      directory_to_clear = find_directory(matcher)
-
-      return unless File.directory?(directory_to_clear)
 
       puts "Removing snapshots"
-      FileUtils.remove_dir(directory_to_clear)
+      Museo.clear!(matcher)
     end
 
     private

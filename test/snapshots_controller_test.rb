@@ -7,7 +7,7 @@ class SnapshotsControllerResponseTest < ActionController::TestCase
   include Museo::MinitestIntegration
 
   setup do
-    Museo::CLI.new("clear")
+    Museo.clear!
     @expected_response_includes = nil
   end
 
@@ -28,7 +28,7 @@ class SnapshotsControllerResponseTest < ActionController::TestCase
 
   teardown do
     assert_includes response.body, @expected_response_includes
-    Museo::CLI.new("clear")
+    Museo.clear!
   end
 end
 
@@ -40,7 +40,7 @@ class SnapshotsControllerSnapshotsTest < ActionController::TestCase
   include Museo::MinitestIntegration
 
   setup do
-    Museo::CLI.new("clear")
+    Museo.clear!
   end
 
   def assert_snapshot
@@ -57,7 +57,7 @@ class SnapshotsControllerSnapshotsTest < ActionController::TestCase
   end
 
   teardown do
-    Museo::CLI.new("clear")
+    Museo.clear!
   end
 end
 
@@ -84,6 +84,6 @@ class SnapshotsControllerStubTest < ActionController::TestCase
     @expected_response_matches.each do |expected_match|
       assert_match expected_match, response.body
     end
-    Museo::CLI.new("clear")
+    Museo.clear!
   end
 end
