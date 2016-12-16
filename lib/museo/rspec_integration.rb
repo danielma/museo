@@ -1,5 +1,5 @@
 module Museo
-  module RspecIntegration
+  module RSpecIntegration
     include TestIntegration
 
     def self.included(base)
