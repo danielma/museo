@@ -43,10 +43,12 @@ module Museo
   class Configuration
     attr_accessor :formatter
     attr_accessor :rspec
+    attr_accessor :generation_disabled
 
     def initialize
       @formatter = Museo::Formatter.new
       @rspec = false
+      @generation_disabled = !!ENV["CI"]
     end
 
     def stubbed_methods
