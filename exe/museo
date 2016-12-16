@@ -4,4 +4,4 @@
 require "museo"
 require "museo/cli"
 
-Museo::CLI.new(*ARGV)
+Museo::CLI.start(ARGV)
