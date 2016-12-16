@@ -53,6 +53,34 @@ Commands:
   museo list [MATCHER]   # List snapshots that match MATCHER
 ```
 
+### RSpec
+
+```ruby
+RSpec.describe ProductsController, type: :controller do
+  include Museo::RSpecIntegration
+  
+  describe "GET #index" do
+    snapshot "with no params" do
+      get :index
+    end
+  end
+end
+```
+
+### Minitest
+
+```ruby
+require "test_helper"
+
+class ProductsControllerTest < ActionController::TestCase
+  include Museo::MinitestIntegration
+  
+  snapshot "#index with no params" do
+    get :index
+  end
+end
+```
+
 ## Getting Started
 
 Museo makes a custom testing command available to your controller tests to save and compare snapshots.
