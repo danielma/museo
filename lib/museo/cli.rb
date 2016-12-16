@@ -1,19 +1,9 @@
-module Museo
-  class CLI
-    def initialize(command = nil, *argv)
-      case command.to_s.strip.downcase
-      when "clear"
-        clear(argv.first)
-      when "list"
-        list(argv.first)
-      when ""
-        puts "Please add a command"
-      else
-        puts "Don't know how to do command: #{command}"
-      end
-    end
+require "thor"
 
-    def list(matcher)
+module Museo
+  class CLI < Thor
+    desc "list [MATCHER]", "List snapshots that match MATCHER"
+    def list(matcher = nil)
       directory = find_directory(matcher)
 
       if File.directory?(directory)
@@ -24,7 +14,8 @@ module Museo
       end
     end
 
-    def clear(matcher)
+    desc "clear [MATCHER]", "Clear snapshots that match MATCHER"
+    def clear(matcher = nil)
       list(matcher)
       directory_to_clear = find_directory(matcher)
 

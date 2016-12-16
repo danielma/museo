@@ -47,7 +47,7 @@ module Museo
 
     def initialize
       @formatter = Museo::Formatter.new
-      @rspec = false
+      @rspec = File.directory?(Museo.rails_root.join("spec"))
       @generation_disabled = !!ENV["CI"]
     end
 

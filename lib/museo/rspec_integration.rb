@@ -24,10 +24,10 @@ module Museo
     end
 
     def expect_matching_snapshot(example)
-      expect(Snapshot::Rspec.new(self, example.metadata).body).to(
-        eq(Snapshot.sanitize_response(response.body)),
-        "Snapshot did not match",
-      )
+      snapshot = Snapshot::Rspec.new(self, example.metadata)
+      response_body = Snapshot.sanitize_response(response.body)
+
+      expect(response_body).to eq(snapshot.body), "Snapshot did not match"
     end
   end
 end
