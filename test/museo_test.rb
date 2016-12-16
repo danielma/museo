@@ -28,4 +28,8 @@ class MuseoTest < ActiveSupport::TestCase
   test "uses minitest test directory by default" do
     assert_includes described_class.pathname("hello").to_s, "test/snapshots/hello"
   end
+
+  teardown do
+    described_class.clear_configuration!
+  end
 end
