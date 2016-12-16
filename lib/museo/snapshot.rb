@@ -14,12 +14,20 @@ module Museo
       @class_name = klass.to_s
       @test_name = test_name
       @response = response
-
-      update unless exists?
     end
 
     def body
-      exists? ? File.read(path) : nil
+      exists? ? File.read(path) : fail("No snapshot found")
+    end
+
+    def update
+      FileUtils.mkdir_p(folder)
+
+      File.open(path, "wb") do |f|
+        f.print self.class.sanitize_response(@response.body.to_s)
+      end
+
+      puts "Updated snapshot for #{file_name.inspect}"
     end
 
     private
@@ -33,21 +41,11 @@ module Museo
     end
 
     def file_name
-      "#{Museo.clean_name(@test_name)}.snapshot"
+      "#{Museo.clean_name(@test_name).join}.snapshot"
     end
 
     def path
       Museo.rails_root.join(folder, file_name)
-    end
-
-    def update
-      FileUtils.mkdir_p(folder)
-
-      File.open(path, "wb") do |f|
-        f.print self.class.sanitize_response(@response.body.to_s)
-      end
-
-      puts "Updated snapshot for #{file_name.inspect}"
     end
   end
 end

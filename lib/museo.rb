@@ -23,7 +23,11 @@ module Museo
 
     def clean_name(name)
       if name
-        name.gsub("::", "/").gsub(/[^0-9a-z\/]+/i, "_")
+        name.
+          tr("/", "_").
+          gsub("::", "/").
+          gsub(/[^0-9a-z\/]+/i, "_").
+          split("/")
       else
         ""
       end
@@ -32,7 +36,7 @@ module Museo
     def pathname(class_name = "")
       test_directory = Museo.configuration.rspec ? "spec" : "test"
 
-      Museo.rails_root.join(test_directory, "snapshots", clean_name(class_name))
+      Museo.rails_root.join(test_directory, "snapshots", *clean_name(class_name))
     end
 
     def clear_configuration!

@@ -6,6 +6,8 @@ module Museo
         clear(argv.first)
       when "list"
         list(argv.first)
+      when "update"
+        update(argv.first)
       when ""
         puts "Please add a command"
       else
@@ -37,15 +39,11 @@ module Museo
     def update(matcher)
       list(matcher)
 
-      # Minitest::Test.class_eval do
-      #   def test
-      #     puts "noop"
-      #   end
-      # end
-
       # Dir.chdir(Museo.rails_root) do
-        
+      #   system "bundle exec rake test TESTOPTS=\"--museo=#{matcher}\""
       # end
+      require "minitest"
+      Minitest.run([museo: matcher])
     end
 
     private

@@ -14,12 +14,24 @@ module Museo
 
             instance_eval(&Proc.new)
 
-            assert_snapshot
+            if Minitest::MuseoSnapshotReporter.active
+              if Minitest::MuseoSnapshotReporter.pattern_match(self)
+                update_snapshot
+              else
+                pass
+              end
+            else
+              assert_snapshot
+            end
           ensure
             _museo_teardown
           end
         end
       end
+    end
+
+    def update_snapshot
+      Snapshot::Minitest.new(self).update
     end
 
     def assert_snapshot
