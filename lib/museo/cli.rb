@@ -34,6 +34,20 @@ module Museo
       FileUtils.remove_dir(directory_to_clear)
     end
 
+    def update(matcher)
+      list(matcher)
+
+      # Minitest::Test.class_eval do
+      #   def test
+      #     puts "noop"
+      #   end
+      # end
+
+      # Dir.chdir(Museo.rails_root) do
+        
+      # end
+    end
+
     private
 
     def find_directory(matcher_or_pathname)

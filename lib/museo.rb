@@ -34,6 +34,10 @@ module Museo
 
       Museo.rails_root.join(test_directory, "snapshots", clean_name(class_name))
     end
+
+    def clear_configuration!
+      @configuration = Configuration.new
+    end
   end
 
   class Configuration
