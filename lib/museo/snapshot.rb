@@ -15,7 +15,7 @@ module Museo
       @test_name = test_name
       @response = response
 
-      update unless exists?
+      generate unless exists?
     end
 
     def body
@@ -40,7 +40,12 @@ module Museo
       Museo.rails_root.join(folder, file_name)
     end
 
-    def update
+    def generate
+      if ENV["CI"]
+        fail "Can't generate snapshots in a CI environment. " \
+             "Please generate snapshots locally first"
+      end
+
       FileUtils.mkdir_p(folder)
 
       File.open(path, "wb") do |f|
