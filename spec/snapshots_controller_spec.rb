@@ -20,7 +20,11 @@ RSpec.describe SnapshotsController, type: :controller do
     end
 
     snapshot "#index with one = Ford" do
-      get :index, one: "Ford"
+      if Rails.gem_version < Gem::Version.new("5.0.0")
+        get :index, one: "Ford"
+      else
+        get :index, params: { one: "Ford" }
+      end
       @expected_response_includes = "Ford"
     end
 
@@ -47,7 +51,11 @@ RSpec.describe SnapshotsController, type: :controller do
     snapshot "should fail with different body" do |example|
       get :index
       Museo::Snapshot::Rspec.new(self, example.metadata)
-      get :index, one: "Bernarnold"
+      if Rails.gem_version < Gem::Version.new("5.0.0")
+        get :index, one: "Bernarnold"
+      else
+        get :index, params: { one: "Bernarnold" }
+      end
     end
 
     after(:each) do

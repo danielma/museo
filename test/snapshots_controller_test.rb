@@ -22,7 +22,11 @@ class SnapshotsControllerResponseTest < ActionController::TestCase
   end
 
   snapshot "#index with one = Dolores" do
-    get :index, one: "Dolores"
+    if Rails.gem_version < Gem::Version.new("5.0.0")
+      get :index, one: "Dolores"
+    else
+      get :index, params: { one: "Dolores" }
+    end
     @expected_response_includes = "Dolores"
   end
 
@@ -53,7 +57,11 @@ class SnapshotsControllerSnapshotsTest < ActionController::TestCase
   snapshot "should fail with different body" do
     get :index
     Museo::Snapshot::Minitest.new(self)
-    get :index, one: "Bernard"
+    if Rails.gem_version < Gem::Version.new("5.0.0")
+      get :index, one: "Bernard"
+    else
+      get :index, params: { one: "Bernard" }
+    end
   end
 
   teardown do
